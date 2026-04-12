@@ -778,7 +778,36 @@ export default function App() {
     }
   };
 
-  if (isLoading) return <div className="flex items-center justify-center h-screen">Chargement...</div>;
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <style>{`
+        @keyframes spin-gradient {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse-scale {
+          0%, 100% { transform: scale(1); opacity: 0.8; }
+          50% { transform: scale(1.1); opacity: 1; }
+        }
+        .spinner {
+          animation: spin-gradient 3s linear infinite;
+        }
+        .pulse-dot {
+          animation: pulse-scale 1.5s ease-in-out infinite;
+        }
+      `}</style>
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative w-20 h-20">
+          <div className="spinner absolute inset-0 rounded-full border-4 border-blue-200 border-t-blue-600"></div>
+          <div className="pulse-dot absolute inset-2 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 opacity-20"></div>
+        </div>
+        <div className="text-center">
+          <p className="text-gray-700 font-semibold text-lg">Chargement...</p>
+          <p className="text-gray-500 text-sm mt-2">Initialisation de votre portefeuille</p>
+        </div>
+      </div>
+    </div>
+  );
 
   const settings = data?.settings || {
     initialBalance: 0,
@@ -867,7 +896,7 @@ export default function App() {
                   onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
                   className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
                 >
-                  {authMode === 'login' ? t.noAccount : t.haveAccount}
+                  {authMode !== 'login' ? t.haveAccount : ''}
                 </button>
               </div>
             </div>

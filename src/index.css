@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,7 +9,7 @@
 
 @layer base {
   body {
-    @apply bg-[#F8F9FB] text-slate-900 font-sans antialiased;
+    @apply bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 text-slate-900 font-sans antialiased min-h-screen;
   }
 }
 
@@ -29,18 +29,39 @@
   background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
 }
 
-/* Custom scrollbar */
+.gradient-purple {
+  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+}
+
+.gradient-pink {
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+}
+
+.gradient-teal {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+}
+
+/* Premium card styling */
+.premium-card {
+  @apply bg-gradient-to-br from-white via-slate-50/50 to-slate-100/30 rounded-3xl shadow-xl shadow-slate-200/30 border border-white/60 backdrop-blur-sm hover:shadow-2xl hover:shadow-slate-300/40 transition-all duration-300;
+}
+
+/* Custom scrollbar with gradient accent */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: linear-gradient(180deg, #8b5cf6 0%, #ec4899 100%);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1;
+  background: linear-gradient(180deg, #a78bfa 0%, #f472b6 100%);
 }
 

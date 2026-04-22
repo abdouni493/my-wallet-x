@@ -1,61 +1,120 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, 
-  ArrowUpRight, 
-  ArrowDownLeft, 
-  History, 
-  Calendar, 
-  Settings as SettingsIcon,
-  Plus,
-  Bell,
-  Search,
-  Filter,
-  ChevronRight,
-  ChevronLeft,
-  TrendingUp,
-  TrendingDown,
-  Wallet,
-  LogOut,
-  Menu,
-  X,
-  Trash2,
-  Edit2,
-  CheckCircle2,
-  AlertCircle,
-  Download,
-  Moon,
-  Sun,
-  Globe,
-  Briefcase,
-  Laptop,
-  Gift,
-  Utensils,
-  Car,
-  Gamepad2,
-  Home,
-  HeartPulse,
-  Languages,
-  Star
-} from 'lucide-react';
 
-// ... (inside the component)
-
-const IconMap: Record<string, any> = {
-  Briefcase,
-  Laptop,
-  Gift,
-  Utensils,
-  Car,
-  Gamepad2,
-  Home,
-  HeartPulse,
-  Wallet
+// Comprehensive Emoji Mapping for Categories and UI Elements
+const EmojiMap: Record<string, string> = {
+  // Income Categories
+  Salary: '💼',
+  Freelance: '🖥️',
+  Business: '🏢',
+  Investment: '📈',
+  Bonus: '🎁',
+  
+  // Expense Categories
+  Groceries: '🛒',
+  Utilities: '💡',
+  Transportation: '🚗',
+  Entertainment: '🎮',
+  Dining: '🍕',
+  Shopping: '🛍️',
+  Healthcare: '🏥',
+  Education: '📚',
+  Fitness: '💪',
+  Travel: '✈️',
+  Subscription: '📺',
+  Insurance: '🛡️',
+  Rent: '🏠',
+  Maintenance: '🔧',
+  Phone: '📱',
+  Internet: '📡',
+  Clothing: '👕',
+  Shoes: '👟',
+  Beauty: '💄',
+  Gaming: '🎮',
+  Books: '📖',
+  Coffee: '☕',
+  Gifts: '🎀',
+  Party: '🎉',
+  Pet: '🐾',
+  Taxi: '🚕',
+  Movies: '🎬',
+  Music: '🎵',
+  Sports: '⚽',
+  Gym: '🏋️',
+  Work: '💼',
+  Home: '🏠',
+  Personal: '👤',
+  Bill: '📄',
+  Reminder: '⏰',
+  
+  // UI & Navigation
+  Briefcase: '💼',
+  Laptop: '💻',
+  Gift: '🎁',
+  Utensils: '🍽️',
+  Car: '🚗',
+  Gamepad2: '🎮',
+  HeartPulse: '❤️',
+  Wallet: '💰',
+  Completed: '✅',
+  Plus: '➕',
+  Trash: '🗑️',
+  Edit: '✏️',
+  Download: '⬇️',
+  Calendar: '📅',
+  Settings: '⚙️',
+  Dashboard: '📊',
+  History: '📜',
+  Search: '🔍',
+  Filter: '⚡',
+  TrendingUp: '📈',
+  TrendingDown: '📉',
+  LogOut: '👋',
+  Menu: '☰',
+  Bell: '🔔',
+  AlertCircle: '⚠️',
+  Language: '🌍',
+  Sun: '☀️',
+  Moon: '🌙',
+  Star: '⭐',
+  Trash2: '🗑️',
+  Edit2: '✏️',
+  CheckCircle2: '✅',
+  ArrowUpRight: '📈',
+  ArrowDownLeft: '📉',
+  ChevronRight: '▶️',
+  ChevronLeft: '◀️',
+  LayoutDashboard: '📊',
+  X: '✖️',
+  Globe: '🌍'
 };
 
-// ... (where icons are rendered)
+// Staggered animation variants for better UX
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
 const CategoryIcon = ({ iconName, size = 20 }: { iconName: string, size?: number }) => {
-  const Icon = IconMap[iconName] || Wallet;
-  return <Icon size={size} />;
+  return <span style={{ fontSize: size * 1.5 }}>{EmojiMap[iconName] || EmojiMap.Wallet}</span>;
 };
 
 const translations = {
@@ -265,15 +324,14 @@ import { User } from '@supabase/supabase-js';
 
 const Card = ({ children, className, title, subtitle, action }: any) => (
   <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className={cn("bg-white rounded-3xl p-6 shadow-sm border border-slate-100", className)}
+    variants={itemVariants}
+    className={cn("bg-gradient-to-br from-white via-slate-50/50 to-slate-100/30 rounded-3xl p-6 shadow-xl shadow-slate-200/30 border border-white/60 backdrop-blur-sm hover:shadow-2xl hover:shadow-slate-300/40 transition-all duration-300", className)}
   >
     {(title || action) && (
       <div className="flex items-center justify-between mb-6">
         <div>
-          {title && <h3 className="text-lg font-semibold text-slate-800">{title}</h3>}
-          {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
+          {title && <h3 className="text-lg font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">{title}</h3>}
+          {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -284,13 +342,13 @@ const Card = ({ children, className, title, subtitle, action }: any) => (
 
 const Button = ({ children, onClick, variant = 'primary', className, icon: Icon, fullWidth, size = 'md', disabled }: any) => {
   const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200 disabled:bg-blue-400",
-    secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50",
-    outline: "border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50",
-    ghost: "text-slate-500 hover:bg-slate-100 disabled:opacity-50",
-    danger: "bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50",
-    success: "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 disabled:opacity-50",
-    gradient: "gradient-blue text-white shadow-lg shadow-blue-200 disabled:opacity-70"
+    primary: "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg hover:shadow-blue-400/50 disabled:opacity-60",
+    secondary: "bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 hover:shadow-md hover:shadow-slate-300/30 disabled:opacity-50",
+    outline: "border-2 border-slate-300 text-slate-600 bg-white/50 hover:bg-slate-50 hover:border-slate-400 disabled:opacity-50",
+    ghost: "text-slate-600 hover:bg-slate-100/50 disabled:opacity-50",
+    danger: "bg-gradient-to-r from-red-400 to-red-500 text-white hover:shadow-lg hover:shadow-red-400/50 disabled:opacity-60",
+    success: "bg-gradient-to-r from-emerald-400 to-emerald-500 text-white hover:shadow-lg hover:shadow-emerald-400/50 disabled:opacity-60",
+    gradient: "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white shadow-lg shadow-pink-300/40 hover:shadow-xl hover:shadow-pink-400/50 disabled:opacity-70"
   };
 
   const sizes = {
@@ -301,12 +359,12 @@ const Button = ({ children, onClick, variant = 'primary', className, icon: Icon,
 
   return (
     <motion.button
-      whileHover={!disabled ? { y: -2 } : {}}
-      whileTap={!disabled ? { scale: 0.96 } : {}}
+      whileHover={!disabled ? { y: -2, scale: 1.02 } : {}}
+      whileTap={!disabled ? { scale: 0.98 } : {}}
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-medium rounded-2xl transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 font-bold rounded-2xl transition-all duration-300",
         variants[variant as keyof typeof variants],
         sizes[size as keyof typeof sizes],
         fullWidth && "w-full",
@@ -314,26 +372,35 @@ const Button = ({ children, onClick, variant = 'primary', className, icon: Icon,
         className
       )}
     >
-      {Icon && <Icon size={size === 'sm' ? 14 : 18} />}
+      {Icon && (typeof Icon === 'string' ? <span className="text-lg">{Icon}</span> : <Icon size={size === 'sm' ? 14 : 18} />)}
       {children}
     </motion.button>
   );
 };
 
-const Input = ({ label, icon: Icon, ...props }: any) => (
-  <div className="space-y-1.5">
-    {label && <label className="text-sm font-medium text-slate-600 ml-1">{label}</label>}
+const Input = ({ label, icon: Icon, emoji, ...props }: any) => (
+  <div className="space-y-2">
+    {label && <label className="text-sm font-bold text-slate-600 ml-1 bg-gradient-to-r from-slate-700 to-slate-500 bg-clip-text text-transparent">{label}</label>}
     <div className="relative">
-      {Icon && (
+      {emoji && (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-xl">
+          {emoji}
+        </div>
+      )}
+      {Icon && (typeof Icon === 'string' ? (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-xl">
+          {Icon}
+        </div>
+      ) : (
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
           <Icon size={18} />
         </div>
-      )}
+      ))}
       <input
         {...props}
         className={cn(
-          "w-full bg-slate-50 border border-slate-100 rounded-2xl py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all",
-          Icon && "pl-11"
+          "w-full bg-gradient-to-br from-white to-slate-50 border-2 border-slate-200 rounded-2xl py-3 px-4 outline-none focus:ring-0 focus:border-purple-400 transition-all duration-300 placeholder:text-slate-400",
+          (Icon || emoji) && "pl-11"
         )}
       />
     </div>
@@ -348,22 +415,29 @@ const Modal = ({ isOpen, onClose, title, children }: any) => (
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+          className="absolute inset-0 bg-slate-900/50 backdrop-blur-md"
         />
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: 0.85, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden"
+          exit={{ opacity: 0, scale: 0.85, y: 30 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="relative w-full max-w-lg bg-gradient-to-br from-white via-slate-50 to-slate-100 rounded-3xl shadow-2xl shadow-slate-400/30 overflow-hidden border border-white/60 backdrop-blur-xl"
         >
-          <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
-            <h2 className="text-xl font-bold text-slate-800">{title}</h2>
-            <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
-              <X size={20} />
-            </button>
+          <div className="p-6 border-b border-slate-200/50 flex items-center justify-between bg-gradient-to-r from-purple-500/5 to-pink-500/5 backdrop-blur-sm">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{title}</h2>
+            <motion.button 
+              onClick={onClose} 
+              className="p-2 hover:bg-slate-200/50 rounded-full transition-colors text-xl"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {EmojiMap.X}
+            </motion.button>
           </div>
-          <div className="p-6 max-h-[80vh] overflow-y-auto">
+          <div className="p-6 max-h-[80vh] overflow-y-auto space-y-4">
             {children}
           </div>
         </motion.div>
@@ -830,17 +904,17 @@ export default function App() {
 
   if (!isLoggedIn) {
     return (
-      <div className={cn("min-h-screen flex items-center justify-center bg-[#F8F9FB] p-4")}>
+      <div className={cn("min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 p-4")}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white rounded-[2.5rem] p-8 shadow-2xl border border-slate-100"
+          className="w-full max-w-md bg-gradient-to-br from-white via-slate-50/50 to-slate-100/30 rounded-3xl p-8 shadow-2xl border border-white/60 backdrop-blur-sm"
         >
           <div className="flex flex-col items-center text-center mb-10">
-            <div className="w-16 h-16 gradient-blue rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-100 mb-6">
-              <Wallet size={32} />
+            <div className="w-16 h-16 gradient-blue rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-100 mb-6 text-4xl">
+              💰
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2">
               {authMode === 'login' ? t.loginTitle : t.registerTitle}
             </h1>
             <p className="text-slate-500">
@@ -1026,11 +1100,11 @@ export default function App() {
     .filter(c => c.value > 0);
 
   const navItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
-    { id: 'transactions', label: 'Transactions', icon: History },
-    { id: 'planning', label: 'Planning', icon: Calendar },
-    { id: 'reports', label: 'Rapports', icon: TrendingUp },
-    { id: 'settings', label: 'Paramètres', icon: SettingsIcon },
+    { id: 'dashboard', label: t.dashboard || 'Dashboard', icon: 'Dashboard' },
+    { id: 'transactions', label: t.transactions || 'Transactions', icon: 'History' },
+    { id: 'planning', label: t.planning || 'Planning', icon: 'Calendar' },
+    { id: 'reports', label: t.reports || 'Reports', icon: 'TrendingUp' },
+    { id: 'settings', label: t.settings || 'Settings', icon: 'Settings' },
   ];
 
   return (
@@ -1051,19 +1125,19 @@ export default function App() {
         <button 
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className={cn(
-            "absolute top-10 w-6 h-6 bg-white border border-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 shadow-sm z-50",
+            "absolute top-10 w-6 h-6 bg-white border border-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 shadow-sm z-50 text-lg",
             isRTL ? "-left-3" : "-right-3"
           )}
         >
-          {isSidebarCollapsed ? (isRTL ? <ChevronLeft size={14} /> : <ChevronRight size={14} />) : (isRTL ? <ChevronRight size={14} /> : <ChevronLeft size={14} />)}
+          {isSidebarCollapsed ? (isRTL ? EmojiMap.ChevronLeft : EmojiMap.ChevronRight) : (isRTL ? EmojiMap.ChevronRight : EmojiMap.ChevronLeft)}
         </button>
 
         <div className={cn("flex items-center gap-3 mb-10 px-2", isSidebarCollapsed && "justify-center")}>
-          <div className="w-10 h-10 gradient-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+          <div className="w-10 h-10 gradient-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100 text-2xl">
             {brandingForm.appLogo.length < 3 ? (
-              <span className="text-xl">{brandingForm.appLogo}</span>
+              <span>{brandingForm.appLogo}</span>
             ) : (
-              <Wallet size={24} />
+              <span>💰</span>
             )}
           </div>
           {!isSidebarCollapsed && (
@@ -1084,7 +1158,7 @@ export default function App() {
                 isSidebarCollapsed && "justify-center px-0"
               )}
             >
-              <item.icon size={20} />
+              <span className="text-xl">{EmojiMap[item.icon] || item.icon}</span>
               {!isSidebarCollapsed && (t[item.id as keyof typeof t] || item.label)}
             </button>
           ))}
@@ -1107,14 +1181,14 @@ export default function App() {
           </div>
 
           <div className={cn("flex flex-col gap-2", isSidebarCollapsed && "items-center")}>
-            <button 
+            <button
               onClick={() => updateSettings({ language: settings.language === 'fr' ? 'ar' : 'fr' })}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all w-full",
                 isSidebarCollapsed && "justify-center px-0"
               )}
             >
-              <Languages size={20} />
+              <span className="text-xl">🌍</span>
               {!isSidebarCollapsed && (
                 <span className="text-sm font-medium">
                   {settings.language === 'fr' ? 'العربية' : 'Français'}
@@ -1128,7 +1202,7 @@ export default function App() {
                 isSidebarCollapsed && "justify-center px-0"
               )}
             >
-              <LogOut size={20} />
+              <span className="text-xl">👋</span>
               {!isSidebarCollapsed && <span className="text-sm font-medium">{t.logout}</span>}
             </button>
           </div>
@@ -1139,16 +1213,16 @@ export default function App() {
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-100 sticky top-0 z-40">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 gradient-blue rounded-lg flex items-center justify-center text-white">
-            <Wallet size={18} />
+          <div className="w-8 h-8 gradient-blue rounded-lg flex items-center justify-center text-white text-lg">
+            💰
           </div>
           <span className="font-bold text-lg">FinTrack</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+          className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-2xl"
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMobileMenuOpen ? EmojiMap.X : EmojiMap.Menu}
         </button>
       </header>
 
@@ -1176,7 +1250,7 @@ export default function App() {
                       : "text-slate-500 hover:bg-slate-50"
                   )}
                 >
-                  <item.icon size={24} />
+                  <span className="text-2xl">{EmojiMap[item.icon] || '📌'}</span>
                   {item.label}
                 </button>
               ))}
@@ -1184,7 +1258,7 @@ export default function App() {
                 onClick={handleLogout}
                 className="w-full flex items-center gap-4 px-6 py-5 rounded-3xl text-lg font-semibold text-red-500 hover:bg-red-50 transition-all"
               >
-                <LogOut size={24} />
+                <span className="text-2xl">👋</span>
                 {t.logout}
               </button>
             </nav>
@@ -1208,10 +1282,10 @@ export default function App() {
                 <p className="text-slate-500">{t.overview}</p>
               </div>
               <div className="flex items-center gap-3">
-                <button className="p-3 bg-white rounded-2xl border border-slate-100 text-slate-500 hover:text-blue-600 transition-all shadow-sm">
-                  <Bell size={20} />
+                <button className="p-3 bg-white rounded-2xl border border-slate-100 text-slate-500 hover:text-blue-600 transition-all shadow-sm text-2xl">
+                  🔔
                 </button>
-                <Button onClick={() => setIsAddModalOpen(true)} variant="gradient" className="px-6" icon={Plus}>
+                <Button onClick={() => setIsAddModalOpen(true)} variant="gradient" className="px-6" icon={EmojiMap.Plus}>
                   {t.add}
                 </Button>
               </div>
@@ -1223,8 +1297,8 @@ export default function App() {
                 whileHover={{ y: -5 }}
                 className="md:col-span-1 gradient-blue rounded-[2.5rem] p-8 text-white shadow-2xl shadow-blue-200 relative overflow-hidden"
               >
-                <div className={cn("absolute top-0 p-8 opacity-20", isRTL ? "left-0" : "right-0")}>
-                  <Wallet size={120} />
+                <div className={cn("absolute top-0 p-8 opacity-20 text-8xl", isRTL ? "left-0" : "right-0")}>
+                  💰
                 </div>
                 <div className="relative z-10">
                   <p className="text-blue-100 font-medium mb-2 opacity-80">{t.balance}</p>
@@ -1232,7 +1306,7 @@ export default function App() {
                     {formatCurrency(currentBalance, settings.currency)}
                   </h3>
                   <div className="flex items-center gap-2 text-sm bg-white/10 backdrop-blur-md w-fit px-3 py-1.5 rounded-full">
-                    <TrendingUp size={16} className="text-emerald-300" />
+                    <span className="text-emerald-300 text-lg">{EmojiMap.TrendingUp}</span>
                     <span className="text-blue-50">+2.4% ce mois</span>
                   </div>
                 </div>
@@ -1241,8 +1315,8 @@ export default function App() {
               <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <Card className={cn("flex flex-col justify-between border-slate-100", isRTL ? "border-r-4 border-r-emerald-500" : "border-l-4 border-l-emerald-500")}>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                      <ArrowUpRight size={24} />
+                    <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl">
+                      {EmojiMap.ArrowUpRight}
                     </div>
                     <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">+12%</span>
                   </div>
@@ -1254,8 +1328,8 @@ export default function App() {
 
                 <Card className={cn("flex flex-col justify-between border-slate-100", isRTL ? "border-r-4 border-r-red-500" : "border-l-4 border-l-red-500")}>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-600">
-                      <ArrowDownLeft size={24} />
+                    <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-600 text-2xl">
+                      {EmojiMap.ArrowDownLeft}
                     </div>
                     <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-lg">-5%</span>
                   </div>
@@ -1384,14 +1458,14 @@ export default function App() {
                           a.completed ? "bg-blue-600 border-blue-600 text-white" : "border-slate-300 bg-white"
                         )}
                       >
-                        {a.completed && <CheckCircle2 size={14} />}
+                        {a.completed && <span className="text-lg">✅</span>}
                       </button>
                       <div className="flex-1">
                         <p className={cn("font-semibold text-slate-800", a.completed && "line-through text-slate-400")}>
                           {a.title}
                         </p>
                         <div className="flex items-center gap-2 text-xs text-slate-400">
-                          <Calendar size={12} />
+                          <span className="text-lg">📅</span>
                           {format(parseISO(a.date), 'dd MMM', { locale: settings.language === 'ar' ? undefined : fr })}
                           {a.amount && <span className="text-blue-500 font-medium ml-2">{formatCurrency(a.amount)}</span>}
                         </div>
@@ -1419,7 +1493,7 @@ export default function App() {
                 className="bg-amber-50 border border-amber-100 p-4 rounded-3xl flex items-center gap-4 text-amber-800"
               >
                 <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600">
-                  <AlertCircle size={24} />
+                  <span className="text-2xl">⚠️</span>
                 </div>
                 <div>
                   <p className="font-bold">{t.lowBalance}</p>
@@ -1447,7 +1521,7 @@ export default function App() {
                     note: ''
                   });
                   setIsAddModalOpen(true);
-                }} variant="gradient" icon={Plus}>{t.add}</Button>
+                }} variant="gradient" icon={EmojiMap.Plus}>{t.add}</Button>
               </div>
             </div>
             
@@ -1455,7 +1529,7 @@ export default function App() {
               <div className="flex-1">
                 <Input 
                   placeholder={t.searchPlaceholder} 
-                  icon={Search} 
+                  icon={EmojiMap.Search} 
                   value={searchQuery}
                   onChange={(e: any) => setSearchQuery(e.target.value)}
                 />
@@ -1463,7 +1537,7 @@ export default function App() {
               <div className="flex gap-2">
                 <Button 
                   variant={transactionFilter === 'all' ? 'primary' : 'outline'} 
-                  icon={Filter}
+                  icon={EmojiMap.Filter}
                   onClick={() => setTransactionFilter('all')}
                 >
                   {t.allTime}
@@ -1536,13 +1610,13 @@ export default function App() {
                             onClick={() => startEditTransaction(t_item)}
                             className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
                           >
-                            <Edit2 size={18} />
+                            <span className="text-lg">✏️</span>
                           </button>
                           <button 
                             onClick={() => deleteTransaction(t_item.id)}
                             className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                           >
-                            <Trash2 size={18} />
+                            <span className="text-lg">🗑️</span>
                           </button>
                         </div>
                       </div>
@@ -1552,8 +1626,8 @@ export default function App() {
               })}
               {filteredTransactions.length === 0 && (
                 <div className="text-center py-20 bg-white rounded-[2.5rem] border border-dashed border-slate-200">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mx-auto mb-4">
-                    <History size={32} />
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mx-auto mb-4 text-4xl">
+                    {EmojiMap.History}
                   </div>
                   <p className="text-slate-400 font-medium">{t.noTransactions}</p>
                 </div>
@@ -1572,7 +1646,7 @@ export default function App() {
               </div>
               <div className="flex items-center gap-3 p-1 bg-white rounded-2xl shadow-sm border border-slate-100">
                 <div className="flex items-center gap-2 px-4 py-2">
-                  <Calendar size={18} className="text-blue-600" />
+                  <span className="text-lg">{EmojiMap.Calendar}</span>
                   <span className="text-sm font-semibold text-slate-700">
                     {format(parseISO(reportRange.start), 'dd MMM')} - {format(parseISO(reportRange.end), 'dd MMM')}
                   </span>
@@ -1611,8 +1685,8 @@ export default function App() {
                   <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                     <div className="relative z-10">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-4">
-                        <TrendingUp size={24} />
+                      <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-4 text-2xl">
+                        📈
                       </div>
                       <p className="text-slate-500 text-sm font-medium mb-1">{t.totalIncome}</p>
                       <h3 className="text-3xl font-bold text-slate-900">{formatCurrency(generatedReport.totalIncome, settings.currency)}</h3>
@@ -1622,8 +1696,8 @@ export default function App() {
                   <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                     <div className="relative z-10">
-                      <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 mb-4">
-                        <TrendingDown size={24} />
+                      <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 mb-4 text-2xl">
+                        📉
                       </div>
                       <p className="text-slate-500 text-sm font-medium mb-1">{t.totalExpense}</p>
                       <h3 className="text-3xl font-bold text-slate-900">{formatCurrency(generatedReport.totalExpense, settings.currency)}</h3>
@@ -1633,8 +1707,8 @@ export default function App() {
                   <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2.5rem] shadow-xl shadow-blue-200 border border-blue-500 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                     <div className="relative z-10">
-                      <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white mb-4">
-                        <Wallet size={24} />
+                      <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white mb-4 text-2xl">
+                        {EmojiMap.Wallet}
                       </div>
                       <p className="text-blue-100 text-sm font-medium mb-1">{t.totalBalance}</p>
                       <h3 className="text-3xl font-bold text-white">{formatCurrency(generatedReport.balance, settings.currency)}</h3>
@@ -1783,8 +1857,8 @@ export default function App() {
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 space-y-6">
                       <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100">
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                            <TrendingUp size={20} />
+                          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg">
+                            {EmojiMap.TrendingUp}
                           </div>
                           <p className="font-bold text-blue-900">{t.dailyAverage}</p>
                         </div>
@@ -1796,8 +1870,8 @@ export default function App() {
 
                       <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100">
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white">
-                            <Star size={20} />
+                          <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white text-xl">
+                            ⭐
                           </div>
                           <p className="font-bold text-amber-900">{t.topCategory}</p>
                         </div>
@@ -1861,7 +1935,7 @@ export default function App() {
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">{t.planningTitle}</h2>
-              <Button onClick={() => setIsApptModalOpen(true)} variant="gradient" icon={Plus}>{t.newReminder}</Button>
+              <Button onClick={() => setIsApptModalOpen(true)} variant="gradient" icon={EmojiMap.Plus}>{t.newReminder}</Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1875,8 +1949,8 @@ export default function App() {
                         <p className="text-xs text-slate-400">{format(parseISO(a.date), 'EEEE dd MMMM', { locale: settings.language === 'ar' ? undefined : fr })}</p>
                       </div>
                       {a.amount && <span className="font-bold text-blue-600">{formatCurrency(a.amount, settings.currency)}</span>}
-                      <button onClick={() => deleteAppt(a.id)} className="p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
-                        <Trash2 size={16} />
+                      <button onClick={() => deleteAppt(a.id)} className="p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all text-lg">
+                        🗑️
                       </button>
                     </div>
                   ))}
@@ -1888,14 +1962,14 @@ export default function App() {
                   {appointments.filter(a => a.completed).map(a => (
                     <div key={a.id} className="p-4 bg-slate-50 rounded-3xl flex items-center gap-4 group">
                       <button onClick={() => toggleAppt(a.id, a.completed)} className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-                        <CheckCircle2 size={14} />
+                        <span className="text-lg">✅</span>
                       </button>
                       <div className="flex-1">
                         <p className="font-bold line-through">{a.title}</p>
                         <p className="text-xs text-slate-400">{format(parseISO(a.date), 'dd MMM', { locale: settings.language === 'ar' ? undefined : fr })}</p>
                       </div>
-                      <button onClick={() => deleteAppt(a.id)} className="p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
-                        <Trash2 size={16} />
+                      <button onClick={() => deleteAppt(a.id)} className="p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all text-lg">
+                        🗑️
                       </button>
                     </div>
                   ))}
@@ -1968,8 +2042,8 @@ export default function App() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
-                      <Globe size={24} />
+                    <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl">
+                      {EmojiMap.Globe}
                     </div>
                     <div>
                       <p className="font-bold">{t.language}</p>
@@ -2014,8 +2088,8 @@ export default function App() {
 
             <Card title={t.backup}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" icon={Download} onClick={handleBackup} fullWidth>
-                  {t.backupBtn}
+                <Button variant="outline" onClick={handleBackup} fullWidth>
+                  ⬇️ {t.backupBtn}
                 </Button>
                 <div className="relative">
                   <input 
@@ -2024,15 +2098,15 @@ export default function App() {
                     onChange={handleRestore}
                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                   />
-                  <Button variant="outline" icon={Plus} fullWidth>
-                    {t.restoreBtn}
+                  <Button variant="outline" fullWidth>
+                    ➕ {t.restoreBtn}
                   </Button>
                 </div>
               </div>
             </Card>
 
             <div className="flex gap-4">
-              <Button variant="danger" fullWidth icon={Trash2}>{t.resetAll}</Button>
+              <Button variant="danger" fullWidth>🗑️ {t.resetAll}</Button>
             </div>
           </div>
         )}
@@ -2046,9 +2120,9 @@ export default function App() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsAddModalOpen(true)}
-          className="w-16 h-16 gradient-blue rounded-full flex items-center justify-center text-white shadow-2xl shadow-blue-400"
+          className="w-16 h-16 gradient-blue rounded-full flex items-center justify-center text-white shadow-2xl shadow-blue-400 text-4xl"
         >
-          <Plus size={32} />
+          {EmojiMap.Plus}
         </motion.button>
       </div>
 
@@ -2127,8 +2201,8 @@ export default function App() {
                       value={newCategory.icon}
                       onChange={(e) => setNewCategory({...newCategory, icon: e.target.value})}
                     >
-                      {Object.keys(IconMap).map(icon => (
-                        <option key={icon} value={icon}>{icon}</option>
+                      {Object.keys(EmojiMap).map(icon => (
+                        <option key={icon} value={icon}>{EmojiMap[icon]} {icon}</option>
                       ))}
                     </select>
                   </div>

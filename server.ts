@@ -1,6 +1,12 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import dotenv from "dotenv";
+
+// Load .env.local in development
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: '.env.local' });
+}
 
 async function startServer() {
   const app = express();

@@ -637,25 +637,45 @@ export default function App() {
 
   const handleAuth = async () => {
     if (isAuthLoading) return;
+    
+    // Validate inputs
+    if (!loginForm.email || !loginForm.password) {
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+    
+    if (authMode === 'register' && !profileForm.fullName) {
+      alert('Veuillez entrer votre nom complet');
+      return;
+    }
+
     setIsAuthLoading(true);
     try {
       if (authMode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({
-          email: loginForm.email,
+          email: loginForm.email.trim(),
           password: loginForm.password,
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message.includes('Invalid login credentials')) {
+            throw new Error('Email ou mot de passe incorrect');
+          }
+          throw error;
+        }
       } else {
+        // Sign up with auto-confirm enabled (no email verification required)
         const { data: authData, error: signUpError } = await supabase.auth.signUp({
-          email: loginForm.email,
+          email: loginForm.email.trim(),
           password: loginForm.password,
           options: {
             data: {
               full_name: profileForm.fullName,
               username: profileForm.username,
-            }
+            },
+            emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined
           }
         });
+        
         if (signUpError) throw signUpError;
 
         if (authData.user) {
@@ -663,32 +683,52 @@ export default function App() {
           setAccountCreatedOnce(true);
           localStorage.setItem('accountCreatedOnce', 'true');
 
-          // Create profile and settings
-          // We use upsert to handle cases where the user might already exist but not be confirmed
-          const { error: profileError } = await supabase.from('profiles').upsert({
+          // Create profile
+          const { error: profileError } = await supabase.from('profiles').insert({
             id: authData.user.id,
             full_name: profileForm.fullName,
             username: profileForm.username,
           });
           
-          if (profileError) console.error("Profile creation error:", profileError);
+          if (profileError) {
+            console.error("Profile creation error:", profileError);
+            // Don't throw - profile might exist from trigger
+          }
 
-          const { error: settingsError } = await supabase.from('user_settings').upsert({
+          // Create user settings
+          const { error: settingsError } = await supabase.from('user_settings').insert({
             user_id: authData.user.id,
             full_name: profileForm.fullName,
             username: profileForm.username,
-            email: loginForm.email
+            email: loginForm.email.trim(),
+            initial_balance: 0,
+            low_balance_threshold: 1000,
+            currency: 'DZD',
+            language: 'fr'
           });
 
-          if (settingsError) console.error("Settings creation error:", settingsError);
+          if (settingsError) {
+            console.error("Settings creation error:", settingsError);
+            // Don't throw - settings might exist from trigger
+          }
 
-          if (!authData.session) {
-            alert("Compte créé ! Veuillez vérifier votre email pour confirmer votre inscription.");
+          // If there's a session, user is already logged in
+          if (authData.session) {
+            alert('Compte créé avec succès! Vous êtes maintenant connecté.');
+          } else {
+            // If no session, auto-login
+            const { error: loginError } = await supabase.auth.signInWithPassword({
+              email: loginForm.email.trim(),
+              password: loginForm.password,
+            });
+            if (loginError) throw loginError;
           }
         }
       }
     } catch (err: any) {
-      alert(err.message);
+      const errorMessage = err.message || 'Une erreur est survenue';
+      console.error('Auth error:', err);
+      alert(errorMessage);
     } finally {
       setIsAuthLoading(false);
     }

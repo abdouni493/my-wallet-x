@@ -509,6 +509,11 @@ export default function App() {
     type: 'bill' as any
   });
 
+  // Track if account has been created once in this session
+  const [accountCreatedOnce, setAccountCreatedOnce] = useState(() => {
+    return localStorage.getItem('accountCreatedOnce') === 'true';
+  });
+
   useEffect(() => {
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -654,6 +659,10 @@ export default function App() {
         if (signUpError) throw signUpError;
 
         if (authData.user) {
+          // Mark that account has been created once
+          setAccountCreatedOnce(true);
+          localStorage.setItem('accountCreatedOnce', 'true');
+
           // Create profile and settings
           // We use upsert to handle cases where the user might already exist but not be confirmed
           const { error: profileError } = await supabase.from('profiles').upsert({
@@ -966,12 +975,14 @@ export default function App() {
               </Button>
               
               <div className="text-center">
-                <button 
-                  onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                >
-                  {authMode !== 'login' ? t.haveAccount : ''}
-                </button>
+                {!accountCreatedOnce && (
+                  <button 
+                    onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    {authMode === 'login' ? t.noAccount : t.haveAccount}
+                  </button>
+                )}
               </div>
             </div>
           </div>
